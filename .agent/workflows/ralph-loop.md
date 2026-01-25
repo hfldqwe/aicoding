@@ -33,3 +33,8 @@ notify_user "接口与测试已提议，请审查。"
 7. 执行应用 (Step 3: Apply)
 // turbo
 step "实现逻辑并通过测试"
+
+8. 归档 (Step 4: Archive)
+// turbo
+step "为当前任务创建归档：在 .ai/history/ 下创建一个带时间戳的文件夹，并将相关的计划文档 (.ai/plans/*.md) 移动到该文件夹中。"
+notify_user "任务已完成并归档。"
