@@ -21,6 +21,12 @@ export class ConfigProvider implements IConfigProvider {
             security: {
                 allowShellCommands: process.env.AICODING_ALLOW_SHELL === 'true',
                 confirmDangerousTools: process.env.AICODING_CONFIRM_DANGEROUS !== 'false', // Default to true
+                dangerousCommands: process.env.AICODING_DANGEROUS_COMMANDS
+                    ? process.env.AICODING_DANGEROUS_COMMANDS.split(',')
+                    : [
+                        '^rm ', '^mv ', '^git push', '^npm publish', '^pnpm publish', '^yarn publish',
+                        '>', '>>', '\\|', ';', '&', // 包含重定向和多命令符的可能是风险
+                    ],
             }
         };
 

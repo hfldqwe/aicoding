@@ -9,6 +9,7 @@ import { EventBus } from './infrastructure/events/EventBus.js';
 import { InMemoryContextManager } from './infrastructure/context/InMemoryContextManager.js';
 import { FileSystemTool } from './tools/FileSystemTool.js';
 import { LocalWorkspace } from './infrastructure/workspace/LocalWorkspace.js';
+import { TerminalTool } from './tools/TerminalTool.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -53,6 +54,7 @@ async function main() {
                 throw new Error("Workspace root not found in config");
             }
             tools.register(new FileSystemTool(new LocalWorkspace(wsRoot)));
+            tools.register(new TerminalTool(configProvider, renderer));
 
             const agent = new ReActAgent(context, tools, llm, events);
 

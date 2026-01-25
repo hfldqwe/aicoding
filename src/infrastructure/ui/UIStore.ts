@@ -20,6 +20,10 @@ export interface UIState {
     isInputVisible: boolean;
     inputPrompt: string;
     spinnerMessage?: string;
+    pendingConfirmation?: {
+        prompt: string;
+        resolve: (result: any) => void;
+    };
 }
 
 class UIStore extends EventEmitter {
@@ -89,6 +93,20 @@ class UIStore extends EventEmitter {
     setSpinner(message?: string) {
         this.state.spinnerMessage = message;
         this.emit('change', this.state);
+    }
+
+    showConfirmation(prompt: string, resolve: (result: any) => void) {
+        this.state.pendingConfirmation = { prompt, resolve };
+        this.emit('change', this.state);
+    }
+
+    handleConfirmationResult(result: any) {
+        if (this.state.pendingConfirmation) {
+            const { resolve } = this.state.pendingConfirmation;
+            this.state.pendingConfirmation = undefined;
+            this.emit('change', this.state);
+            resolve(result);
+        }
     }
 }
 

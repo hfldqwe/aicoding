@@ -1,0 +1,47 @@
+{
+    "project": "aicoding",
+    "branchName": "feat/terminal-security",
+    "description": "US-008：终端命令执行安全拦截机制 (Human-in-the-loop) - 防止 AI 盲执行危险命令导致灾难后果。",
+    "userStories": [
+        {
+            "id": "US-001",
+            "title": "危险命令识别规则配置",
+            "description": "As a developer, I want to configure regex for dangerous commands in config.ts so the system can identify them.",
+            "acceptanceCriteria": [
+                "Extend IConfig in src/types/config.ts to include security.dangerousCommands (string[])",
+                "Add default dangerous command patterns in the initial config",
+                "Typecheck passes"
+            ],
+            "priority": 1,
+            "passes": false,
+            "notes": ""
+        },
+        {
+            "id": "US-002",
+            "title": "执行前拦截与 UI 确认接口",
+            "description": "As a user, I want to see a confirmation prompt before dangerous commands are executed, with an Always Allow option.",
+            "acceptanceCriteria": [
+                "Extend IRenderer in src/types/ui.ts with confirmAction(options: ConfirmOptions): Promise<ConfirmResult>",
+                "Implement internal logic to capture 'Always Allow' patterns for the current session",
+                "Typecheck passes"
+            ],
+            "priority": 2,
+            "passes": false,
+            "notes": ""
+        },
+        {
+            "id": "US-003",
+            "title": "终端工具拦截逻辑与反馈循环",
+            "description": "As a user, I want to provide a reason when denying a command, which will be returned to the LLM.",
+            "acceptanceCriteria": [
+                "Inject security check logic into TerminalTool.execute",
+                "Ensure user feedback is correctly appended to the error result for LLM",
+                "Tests pass",
+                "Typecheck passes"
+            ],
+            "priority": 3,
+            "passes": false,
+            "notes": ""
+        }
+    ]
+}

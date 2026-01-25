@@ -56,4 +56,12 @@ export class TerminalRenderer implements IRenderer {
     stopSpinner(): void {
         uiStore.setSpinner(undefined);
     }
+
+    confirmAction(prompt: string): Promise<ConfirmResult> {
+        return new Promise((resolve) => {
+            uiStore.showConfirmation(prompt, resolve);
+        });
+    }
 }
+
+import { ConfirmResult } from '../../types/ui.js';

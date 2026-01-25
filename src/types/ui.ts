@@ -23,4 +23,15 @@ export interface IRenderer {
      */
     startSpinner(text: string): void;
     stopSpinner(): void;
+
+    /**
+     * Confirms a dangerous action with the user.
+     */
+    confirmAction(prompt: string): Promise<ConfirmResult>;
+}
+
+export enum ConfirmResult {
+    ALLOW = 'allow',
+    ALWAYS_ALLOW = 'always_allow',
+    DENY = 'deny'
 }

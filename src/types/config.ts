@@ -9,6 +9,7 @@ export interface IConfig {
     security: {
         allowShellCommands: boolean;
         confirmDangerousTools: boolean;
+        dangerousCommands: string[];
     };
 }
 
