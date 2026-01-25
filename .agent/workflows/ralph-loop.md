@@ -34,5 +34,5 @@ step "读取 `prd.json`，按优先级顺序执行 User Stories。对于每一�
 
 8. 归档与合并 (Step 5: Archive & Merge)
 // turbo
-step "所有 Story 通过后：(1) 归档任务到 `.ai/history/` (2) 提议合并回主分支 (Review & Merge Request)。"
+step "所有 Story 通过后：(1) 将 prd.json (检查 root 和 tasks/ 目录) 以及 tasks/prd-*.md 移动到 .ai/history/<date>-<feature>/ 目录。 (2) 提议合并回主分支 (Review & Merge Request)。"
 notify_user "Ralph Loop 完成。PRD 已归档，分支已准备好合并。"
