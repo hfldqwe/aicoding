@@ -49,7 +49,7 @@ sequenceDiagram
         else 最终回答 (Final Answer)
             Agent->>Bus: emit('agent:thought')
             Bus-->>UI: 渲染回答
-            break
+
         end
     end
     
