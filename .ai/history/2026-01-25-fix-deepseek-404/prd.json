@@ -14,8 +14,8 @@
                 "单元测试 (OpenAIProvider.test.ts) 通过"
             ],
             "priority": 1,
-            "passes": false,
-            "notes": ""
+            "passes": true,
+            "notes": "404 修复通过强制 .chat() 解决，并添加了 stopSequences 防止幻觉。"
         },
         {
             "id": "US-FIX-002",
@@ -28,8 +28,8 @@
                 "验收通过"
             ],
             "priority": 2,
-            "passes": false,
-            "notes": ""
+            "passes": true,
+            "notes": "冒烟测试成功，模型能正确使用工具读取 package.json。"
         }
     ]
 }
