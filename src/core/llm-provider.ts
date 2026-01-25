@@ -1,8 +1,8 @@
 
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText, streamText } from 'ai';
-import { ILLMConfig, ILLMProvider, IStreamChunk } from '../types/llm';
-import { IChatMessage } from '../types/context';
+import { ILLMConfig, ILLMProvider, IStreamChunk } from '../types/llm.js';
+import { IChatMessage } from '../types/context.js';
 
 export class OpenAIProvider implements ILLMProvider {
     private openai;
@@ -24,7 +24,7 @@ export class OpenAIProvider implements ILLMProvider {
                 model: this.openai(this.modelName),
                 messages: this.convertMessages(messages),
                 temperature: this.config.temperature,
-                maxTokens: this.config.maxTokens,
+                // maxTokens: this.config.maxTokens,
             });
             return text;
         } catch (error) {
@@ -39,7 +39,7 @@ export class OpenAIProvider implements ILLMProvider {
                 model: this.openai(this.modelName),
                 messages: this.convertMessages(messages),
                 temperature: this.config.temperature,
-                maxTokens: this.config.maxTokens,
+                // maxTokens: this.config.maxTokens,
             });
 
             for await (const textPart of result.textStream) {

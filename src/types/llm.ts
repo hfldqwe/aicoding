@@ -1,4 +1,4 @@
-import { IChatMessage } from './context';
+import { IChatMessage } from './context.js';
 
 export interface ILLMConfig {
     apiKey: string;

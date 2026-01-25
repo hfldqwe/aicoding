@@ -1,4 +1,4 @@
-import { IDisposable } from './common';
+import { IDisposable } from './common.js';
 
 /**
  * Type-safe event definitions.

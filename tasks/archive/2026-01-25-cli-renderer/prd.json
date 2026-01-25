@@ -1,0 +1,54 @@
+{
+    "project": "aicoding",
+    "branchName": "ralph/cli-renderer",
+    "description": "Implement CLI entry, Terminal Renderer (Ink), and Final Integration",
+    "userStories": [
+        {
+            "id": "US-005",
+            "title": "CLI Entry & Config Load",
+            "description": "As a user, I want to start the application via command line and have my configuration loaded automatically.",
+            "acceptanceCriteria": [
+                "Install commander and dotenv",
+                "Implement src/index.ts (or bin/aicoding.ts)",
+                "Implement ConfigProvider",
+                "Support --verbose flag",
+                "Load AICODING_API_KEY from env",
+                "Typecheck passes"
+            ],
+            "priority": 1,
+            "passes": true,
+            "notes": ""
+        },
+        {
+            "id": "US-006",
+            "title": "Terminal Renderer (Ink)",
+            "description": "As a user, I want a visual interface that differentiates between me and the AI, and shows when tools are running.",
+            "acceptanceCriteria": [
+                "Install ink, react, ink-spinner",
+                "Implement TerminalRenderer class",
+                "renderMessage distinguishes User/AI",
+                "renderToolUse shows spinner/status",
+                "Streaming typewriter effect",
+                "Typecheck passes"
+            ],
+            "priority": 2,
+            "passes": true,
+            "notes": ""
+        },
+        {
+            "id": "US-007",
+            "title": "Ultimate Integration",
+            "description": "As a developer, I want to verify the entire system works end-to-end.",
+            "acceptanceCriteria": [
+                "Wire up Config -> LLM -> Agent -> Renderer",
+                "Run real query (e.g. math)",
+                "Verify Input/Thinking/Output cycle",
+                "Graceful exit",
+                "Typecheck passes"
+            ],
+            "priority": 3,
+            "passes": true,
+            "notes": ""
+        }
+    ]
+}

@@ -1,9 +1,9 @@
 
-import { IAgent } from '../types/agent';
-import { IContextManager, IChatMessage } from '../types/context';
-import { IEventBus } from '../types/events';
-import { ILLMProvider } from '../types/llm';
-import { IToolRegistry } from '../types/tool';
+import { IAgent } from '../types/agent.js';
+import { IContextManager, IChatMessage } from '../types/context.js';
+import { IEventBus } from '../types/events.js';
+import { ILLMProvider } from '../types/llm.js';
+import { IToolRegistry } from '../types/tool.js';
 
 export class ReActAgent implements IAgent {
     private maxIterations = 10;

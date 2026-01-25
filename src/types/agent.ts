@@ -1,7 +1,7 @@
-import { IContextManager } from './context';
-import { IEventBus } from './events';
-import { IToolRegistry } from './tool';
-import { ILLMProvider } from './llm';
+import { IContextManager } from './context.js';
+import { IEventBus } from './events.js';
+import { IToolRegistry } from './tool.js';
+import { ILLMProvider } from './llm.js';
 
 /**
  * The main Agent orchestrator.
