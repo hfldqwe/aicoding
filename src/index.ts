@@ -45,6 +45,7 @@ async function main() {
             const llm = new OpenAIProvider({
                 apiKey: llmConfig.apiKey,
                 modelName: llmConfig.model,
+                baseURL: llmConfig.baseUrl,
             });
 
             const tools = new ToolRegistry();

@@ -5,6 +5,7 @@ export interface ILLMConfig {
     modelName: string;
     temperature?: number;
     maxTokens?: number;
+    baseURL?: string;
 }
 
 /**

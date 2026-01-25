@@ -14,6 +14,7 @@ export class OpenAIProvider implements ILLMProvider {
         }
         this.openai = createOpenAI({
             apiKey: config.apiKey,
+            baseURL: config.baseURL,
         });
         this.modelName = config.modelName || 'gpt-4o';
     }
