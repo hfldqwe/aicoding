@@ -1,20 +1,17 @@
 {
     "project": "aicoding",
-    "branchName": "ralph/project-readme",
-    "description": "Project Introduction & Remote Sync",
+    "branchName": "ralph/readme-enhancement",
+    "description": "Enhancing Project Documentation (Architecture, Visuals, Bilingual)",
     "userStories": [
         {
             "id": "US-001",
-            "title": "Create README.md (English & Chinese)",
-            "description": "As a new developer or learner, I want to read a README file in my preferred language so that I can understand the project's purpose.",
+            "title": "Language Navigation",
+            "description": "As a user, I want to quickly switch between English and Chinese versions.",
             "acceptanceCriteria": [
-                "File created at root: `README.md` (English).",
-                "File created at root: `README_zh-CN.md` (Chinese).",
-                "Both files contain project title and 'Vibe Coding' focus.",
-                "Both describe the Agentic architecture (Ralph Loop).",
-                "Both list key features.",
-                "Verify Markdown renders correctly for both.",
-                "Typecheck passes"
+                "Top of `README.md`: Link to `README_zh-CN.md`.",
+                "Top of `README_zh-CN.md`: Link to `README.md`.",
+                "Uses a clean badge or link style (e.g., `[English] | [中文]`).",
+                "Verify in Markdown preview."
             ],
             "priority": 1,
             "passes": false,
@@ -22,13 +19,14 @@
         },
         {
             "id": "US-002",
-            "title": "Sync to Remote",
-            "description": "As the project owner, I want to push my local changes to the remote repo, overriding any conflicts, so that the remote reflects my current work.",
+            "title": "Architecture & Diagrams",
+            "description": "As a developer, I want to see the system architecture at a glance.",
             "acceptanceCriteria": [
-                "Local commits pushed to origin/main (or current branch).",
-                "Use force push if necessary (`git push --force`).",
-                "Command returns success.",
-                "Typecheck passes"
+                "Add 'Architecture' section.",
+                "Embed a Mermaid Sequence Diagram showing the Ralph Loop flow.",
+                "Embed a Mermaid Class Diagram showing the Core Agent structure.",
+                "Link to `docs/ARCHITECTURE.md`.",
+                "Verify diagrams render correctly."
             ],
             "priority": 2,
             "passes": false,

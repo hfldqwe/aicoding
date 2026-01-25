@@ -1,5 +1,7 @@
 # aicoding: Vibe Coding 实验场
 
+> **[English](README.md) | [中文说明](README_zh-CN.md)**
+
 欢迎来到 `aicoding`，这是一个致力于探索和掌握 **Vibe Coding** 技术以及高级 AI Agent 协作模式的实验性项目。
 
 ## 什么是 Vibe Coding?
@@ -9,15 +11,58 @@ Vibe Coding 是一种开发哲学，强调开发者与自主 AI Agent 深度协�
 - **Agent 工作流**: 使用结构化循环（如 Ralph Loop）处理复杂任务。
 - **验证机制**: 严格通过测试产物来验证 AI 的工作成果。
 
-## 架构核心: Ralph Loop
+## 系统架构
 
-本项目采用 **Ralph Loop** 开发工作流 (严格模式):
+本项目建立在清晰的关注点分离之上，由 **Ralph Loop** 工作流驱动。
 
-1.  **输入 (Input)**: 用户提出需求。
-2.  **设计 (Design)**: AI 生成详细的产品需求文档 (PRD)。
-3.  **转换 (Conversion)**: 将 PRD 转换为 Agent 可读的 `prd.json` 格式。
-4.  **执行 (Execution)**: Agent 逐条执行用户故事 (User Stories) 并验证。
-5.  **归档与合并 (Archive & Merge)**: 归档已完成任务并合并代码。
+### 1. Ralph 循环 (开发流)
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant AI as AI Agent (Ralph)
+    participant PRD as 产品文档
+    participant Code as 源代码
+    
+    User->>AI: 功能需求 (输入)
+    AI->>PRD: 起草设计 (计划)
+    User->>PRD: 审查与批准
+    AI->>Code: 实现接口 (提议)
+    AI->>Code: 实现逻辑 (应用)
+    Code->>Code: 验证 (测试 & 类型检查)
+    AI->>User: 合并请求 (归档)
+```
+
+### 2. Agent 核心结构
+
+Agent 核心遵循 **接口隔离原则 (ISP)**.
+
+```mermaid
+classDiagram
+    class IAgent {
+        +run(instruction)
+    }
+    class IContext {
+        +history
+        +workspace
+    }
+    class ILLMProvider {
+        +generateText()
+        +streamText()
+    }
+    class IToolRegistry {
+        +getTool()
+        +listTools()
+    }
+    
+    IAgent --> IContext : 使用
+    IAgent --> ILLMProvider : 依赖
+    IAgent --> IToolRegistry : 依赖
+```
+
+如需深入了解系统设计，请参阅:
+- [架构文档](docs/ARCHITECTURE.md)
+- [Vibe Coding 指南](.ai/VIBE_CODING_GUIDE.md)
 
 ## 主要功能
 
