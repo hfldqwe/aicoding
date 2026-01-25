@@ -1,10 +1,10 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ReActAgent } from '../../src/core/agent';
-import { IContextManager } from '../../src/types/context';
-import { ILLMProvider } from '../../src/types/llm';
-import { IToolRegistry, ITool } from '../../src/types/tool';
-import { IEventBus } from '../../src/types/events';
+import { ReActAgent } from '../../src/core/agent.js';
+import { IContextManager, IChatMessage } from '../../src/types/context.js';
+import { ILLMProvider } from '../../src/types/llm.js';
+import { IToolRegistry, ITool } from '../../src/types/tool.js';
+import { IEventBus } from '../../src/types/events.js';
 
 describe('ReActAgent', () => {
     let agent: ReActAgent;

@@ -1,7 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ConfigProvider } from '../../../src/infrastructure/config/ConfigProvider';
-import { IConfig } from '../../../src/types/config';
+import { ConfigProvider } from '../../../src/infrastructure/config/ConfigProvider.js';
+import { IConfig } from '../../../src/types/config.js';
 
 describe('ConfigProvider', () => {
     const originalEnv = process.env;

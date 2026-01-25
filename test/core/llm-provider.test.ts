@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { OpenAIProvider } from '../../src/core/llm-provider';
+import { OpenAIProvider } from '../../src/core/llm-provider.js';
 import * as ai from 'ai';
 
 // Mock the 'ai' module
