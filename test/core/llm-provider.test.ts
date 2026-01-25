@@ -11,7 +11,11 @@ vi.mock('ai', () => ({
 
 // Mock @ai-sdk/openai
 vi.mock('@ai-sdk/openai', () => ({
-    createOpenAI: vi.fn(() => (modelName: string) => ({ modelName }))
+    createOpenAI: vi.fn(() => {
+        const factory: any = (modelName: string) => ({ modelName });
+        factory.chat = (modelName: string) => ({ modelName });
+        return factory;
+    })
 }));
 
 describe('OpenAIProvider', () => {

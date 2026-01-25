@@ -1,0 +1,35 @@
+{
+    "project": "aicoding",
+    "branchName": "ralph/fix-deepseek-404",
+    "description": "修复 DeepSeek 调用时的 404 (Not Found) 错误，解决由于 SDK 默认使用 Responses API 导致的兼容性问题。",
+    "userStories": [
+        {
+            "id": "US-FIX-001",
+            "title": "调试并修复 404 路径错误",
+            "description": "作为开发者，我需要修正 LLM Provider 的初始化或调用方式，确保其不请求 /responses 路径。",
+            "acceptanceCriteria": [
+                "定位导致请求 /responses 的代码",
+                "修改模型初始化逻辑以规避 Responses API",
+                "静态类型检查通过 (tsc)",
+                "单元测试 (OpenAIProvider.test.ts) 通过"
+            ],
+            "priority": 1,
+            "passes": false,
+            "notes": ""
+        },
+        {
+            "id": "US-FIX-002",
+            "title": "端到端冒烟测试",
+            "description": "作为用户，我需要确保整个系统在使用 DeepSeek 时能正常工作。",
+            "acceptanceCriteria": [
+                "在 Windows 终端运行 npm start",
+                "发送一个简单的中文提问并获得回复",
+                "观察日志确保不再请求 /responses",
+                "验收通过"
+            ],
+            "priority": 2,
+            "passes": false,
+            "notes": ""
+        }
+    ]
+}

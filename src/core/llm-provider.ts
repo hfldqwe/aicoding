@@ -22,9 +22,10 @@ export class OpenAIProvider implements ILLMProvider {
     async chat(messages: IChatMessage[]): Promise<string> {
         try {
             const { text } = await generateText({
-                model: this.openai(this.modelName),
+                model: this.openai.chat(this.modelName),
                 messages: this.convertMessages(messages),
                 temperature: this.config.temperature,
+                stopSequences: ['Observation:'],
                 // maxTokens: this.config.maxTokens,
             });
             return text;
@@ -37,7 +38,7 @@ export class OpenAIProvider implements ILLMProvider {
     async *chatStream(messages: IChatMessage[]): AsyncIterable<IStreamChunk> {
         try {
             const result = streamText({
-                model: this.openai(this.modelName),
+                model: this.openai.chat(this.modelName),
                 messages: this.convertMessages(messages),
                 temperature: this.config.temperature,
                 // maxTokens: this.config.maxTokens,
