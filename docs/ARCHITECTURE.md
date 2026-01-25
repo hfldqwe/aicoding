@@ -1,17 +1,19 @@
-# 架构设计文档 (Architecture Design)
+# Architecture Design
 
-## 1. 核心理念 (Core Philosophy)
-本项目 `aicoding` 旨在构建一个高度解耦、即插即用的终端 AI 编程智能体。
-每一行代码都应遵循 **依赖倒置原则 (DIP)** 和 **接口隔离原则 (ISP)**。
+> **[English](ARCHITECTURE.md) | [中文版](ARCHITECTURE_zh-CN.md)**
 
-### C/S 架构理念 (Client/Server Mentality)
-尽管这是个本地 CLI 工具，我们在模块设计上采用 C/S 隐喻：
-- **Client (UI Layer)**: `src/ui`. 负责渲染和接收输入，不含任何业务逻辑。它通过 `EventBus` 订阅状态变化。
-- **Server (Core Layer)**: `src/agent`. 负责大脑思考、循环调度。它不知道 UI 是控制台还是 Web 页。
-- **Infrastructure (Infra Layer)**: `src/llm`, `src/tools`, `src/fs`. 具体的实现细节（如调用 OpenAI 或读写本地文件）。
+## 1. Core Philosophy
+The `aicoding` project aims to build a highly decoupled, plug-and-play terminal AI coding agent.
+Every line of code should adhere to the **Dependency Inversion Principle (DIP)** and **Interface Segregation Principle (ISP)**.
 
-## 2. 数据流与交互 (Data Flow)
-用户输入被 UI 捕获后，传递给 Agent。Agent 不直接操作 DOM 或 Console，而是通过发射事件告知 UI 该显示什么。
+### Client/Server Mentality
+Although this is a local CLI tool, we adopt a C/S metaphor in module design:
+- **Client (UI Layer)**: `src/ui`. Responsible for rendering and receiving input, containing no business logic. It subscribes to state changes via `EventBus`.
+- **Server (Core Layer)**: `src/agent`. Responsible for reasoning and loop scheduling. It does not know if the UI is a console or a Web page.
+- **Infrastructure (Infra Layer)**: `src/llm`, `src/tools`, `src/fs`. Concrete implementation details (e.g., calling OpenAI or reading/writing local files).
+
+## 2. Data Flow
+After user input is captured by the UI, it is passed to the Agent. The Agent does not directly manipulate the DOM or Console but instead emits events to inform the UI what to display.
 
 ```mermaid
 sequenceDiagram
@@ -23,32 +25,32 @@ sequenceDiagram
     participant LLM as LLM (ILLMProvider)
     participant Tool as ToolRegistry
 
-    User->>UI: 输入指令 (Input)
+    User->>UI: Input Command (Input)
     UI->>Agent: run(instruction)
     activate Agent
     
     Agent->>Bus: emit('agent:start')
-    Bus-->>UI: 渲染 "Thinking..."
+    Bus-->>UI: Render "Thinking..."
     
-    loop 思考与执行循环 (Thought Loop)
+    loop Thought Loop
         Agent->>Context: getHistory()
         Context-->>Agent: Messages[]
         
         Agent->>LLM: chat(Messages)
         LLM-->>Agent: Response (Thought + ToolCall?)
         
-        alt 决定调用工具 (Tool Call)
+        alt Decide to Call Tool
             Agent->>Bus: emit('tool:call')
-            Bus-->>UI: 渲染 "Executing [ToolName]..."
+            Bus-->>UI: Render "Executing [ToolName]..."
             
             Agent->>Tool: execute(ToolName, Args)
             Tool-->>Agent: ToolOutput
             
             Agent->>Context: addMessage(ToolOutput)
             Agent->>Bus: emit('tool:result')
-        else 最终回答 (Final Answer)
+        else Final Answer
             Agent->>Bus: emit('agent:thought')
-            Bus-->>UI: 渲染回答
+            Bus-->>UI: Render Answer
 
         end
     end
@@ -56,16 +58,16 @@ sequenceDiagram
     deactivate Agent
 ```
 
-## 3. 模块职责 (Module Responsibilities)
+## 3. Module Responsibilities
 
-| 模块 | 核心接口 | 职责 | 依赖方向 |
+| Module | Core Interface | Responsibility | Dependency Direction |
 | :--- | :--- | :--- | :--- |
-| **Type Definitions** | `src/types/*.ts` | 定义契约。所有模块的指路明灯。 | 无依赖 (Base) |
-| **Infrastructure** | `ILLMProvider`, `IWorkspace` | 实现具体的 IO 操作（如 OpenAI API, 文件读写）。 | 依赖 Types |
-| **Logic Core** | `IAgent`, `IContextManager` | 业务逻辑的核心。编排 LLM 与工具及其状态。 | 依赖 Types (Interface only) |
-| **Presentation** | `IRenderer` | 将内部事件转化为用户可读的 UI（CLI/TUI）。 | 依赖 Types, Events |
+| **Type Definitions** | `src/types/*.ts` | Defines contracts. The guiding light for all modules. | No Dependencies (Base) |
+| **Infrastructure** | `ILLMProvider`, `IWorkspace` | Implements concrete IO operations (e.g., OpenAI API, file I/O). | Depends on Types |
+| **Logic Core** | `IAgent`, `IContextManager` | Core business logic. Orchestrates LLM, tools, and state. | Depends on Types (Interface only) |
+| **Presentation** | `IRenderer` | Converts internal events into user-readable UI (CLI/TUI). | Depends on Types, Events |
 
-## 4. 扩展性设计 (Extensibility)
-- **接入新模型**: 只需实现 `ILLMProvider`。
-- **添加新工具**: 实现 `ITool` 接口并通过 `IToolRegistry.register()` 注册，Agent 会自动感知。
-- **更换 UI**: 只要实现 `IRenderer`，可以轻松从 Terminal 切换到 VSCode Webview。
+## 4. Extensibility
+- **Adding a New Model**: Simply implement `ILLMProvider`.
+- **Adding a New Tool**: Implement `ITool` interface and register via `IToolRegistry.register()`. The Agent automatically perceives it.
+- **Changing UI**: As long as `IRenderer` is implemented, you can easily switch from Terminal to VSCode Webview.

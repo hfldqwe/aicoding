@@ -61,7 +61,7 @@ classDiagram
 ```
 
 如需深入了解系统设计，请参阅:
-- [架构文档](docs/ARCHITECTURE.md)
+- [架构文档](docs/ARCHITECTURE_zh-CN.md)
 - [Vibe Coding 指南](.ai/VIBE_CODING_GUIDE.md)
 
 ## 主要功能
