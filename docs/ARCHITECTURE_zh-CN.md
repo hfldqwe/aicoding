@@ -72,3 +72,15 @@ sequenceDiagram
 - **接入新模型**: 只需实现 `ILLMProvider`。
 - **添加新工具**: 实现 `ITool` 接口并通过 `IToolRegistry.register()` 注册，Agent 会自动感知。
 - **更换 UI**: 只要实现 `IRenderer`，可以轻松从 Terminal 切换到 VSCode Webview。
+
+## 5. 目录结构 (Directory Structure)
+为了保持架构整洁，请遵守以下目录组织规范：
+- `src/`: 源代码。
+  - `src/types/`: 接口定义（契约）。
+  - `src/core/`: 业务逻辑（Agent, LLM 抽象）。
+  - `src/tools/`: 工具实现。**严禁在此处放置测试文件。**
+  - `src/infrastructure/`: 具体实现（FS, 特定 LLM）。
+- `test/`: **所有测试文件必须位于此处。**
+  - 命名规范: `[Component].test.ts`。
+  - 测试目录结构应尽可能镜像 `src/`，若简单可扁平化。
+- `docs/`: 文档。

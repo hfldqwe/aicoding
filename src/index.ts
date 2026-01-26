@@ -10,6 +10,7 @@ import { InMemoryContextManager } from './infrastructure/context/InMemoryContext
 import { FileSystemTool } from './tools/FileSystemTool.js';
 import { LocalWorkspace } from './infrastructure/workspace/LocalWorkspace.js';
 import { TerminalTool } from './tools/TerminalTool.js';
+import { WorkspaceTool } from './tools/WorkspaceTool.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -55,6 +56,7 @@ async function main() {
             }
             tools.register(new FileSystemTool(new LocalWorkspace(wsRoot)));
             tools.register(new TerminalTool(configProvider, renderer));
+            tools.register(new WorkspaceTool());
 
             const agent = new ReActAgent(context, tools, llm, events);
 

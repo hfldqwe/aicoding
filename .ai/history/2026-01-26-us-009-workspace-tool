@@ -1,0 +1,50 @@
+{
+    "project": "aicoding",
+    "branchName": "ralph/us-009-workspace-tool",
+    "description": "US-009: Project Environment & Git Awareness Tool (WorkspaceTool)",
+    "userStories": [
+        {
+            "id": "US-009.1",
+            "title": "Project Root Detection",
+            "description": "As an agent, I want to know where the project root is so that I can anchor my operations.",
+            "acceptanceCriteria": [
+                "WorkspaceTool correctly identifies the project root path.",
+                "Returns the absolute path in a cross-platform format.",
+                "Typecheck passes"
+            ],
+            "priority": 1,
+            "passes": true,
+            "notes": "Implemented and verified via automated tests."
+        },
+        {
+            "id": "US-009.2",
+            "title": "Git-Aware File Listing",
+            "description": "As an agent, I want to see the project file structure without noise (node_modules, ignored files) so that I can find relevant code efficiently.",
+            "acceptanceCriteria": [
+                "Can list files recursively starting from root or a specific subdirectory.",
+                "STRICTLY respects .gitignore rules.",
+                "excludes node_modules, .git, dist, build etc. by default references.",
+                "Typecheck passes"
+            ],
+            "priority": 2,
+            "passes": true,
+            "notes": "Implemented and verified via automated tests."
+        },
+        {
+            "id": "US-009.3",
+            "title": "Git Status Reporting",
+            "description": "As an agent, I want to know the current Git status so that I don't overwrite important uncommitted work or work on the wrong branch.",
+            "acceptanceCriteria": [
+                "Returns current branch name.",
+                "Returns list of modified (unstaged) files.",
+                "Returns list of staged files.",
+                "Returns list of untracked files.",
+                "Output is structured (JSON), not raw git output.",
+                "Typecheck passes"
+            ],
+            "priority": 3,
+            "passes": true,
+            "notes": "Implemented and verified via automated tests."
+        }
+    ]
+}

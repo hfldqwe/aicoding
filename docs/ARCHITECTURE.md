@@ -71,3 +71,15 @@ sequenceDiagram
 - **Adding a New Model**: Simply implement `ILLMProvider`.
 - **Adding a New Tool**: Implement `ITool` interface and register via `IToolRegistry.register()`. The Agent automatically perceives it.
 - **Changing UI**: As long as `IRenderer` is implemented, you can easily switch from Terminal to VSCode Webview.
+
+## 5. Directory Structure
+Adhere to the following directory organization to maintain a clean architecture:
+- `src/`: Source code.
+  - `src/types/`: Interface definitions (Contracts).
+  - `src/core/`: Business logic (Agent, LLM abstraction).
+  - `src/tools/`: Tool implementations. **DO NOT put test files here.**
+  - `src/infrastructure/`: Concrete implementations (FS, specific LLMs).
+- `test/`: **All test files must reside here.**
+  - Naming convention: `[Component].test.ts`.
+  - Tests should mirror `src/` structure where possible, or be flat if simple.
+- `docs/`: Documentation.
