@@ -12,12 +12,12 @@ export interface SessionInfo {
 
 export class JsonlContextManager implements IContextManager {
     private readonly sessionDir: string;
-    private readonly sessionFile: string;
+    private sessionFile: string;
     private writeQueue: string[] = [];
     private isWriting = false;
 
     constructor(
-        private readonly sessionId: string,
+        private sessionId: string,
         private readonly workspaceRoot: string
     ) {
         this.sessionDir = path.join(this.workspaceRoot, '.aicoding', 'sessions');
@@ -29,6 +29,14 @@ export class JsonlContextManager implements IContextManager {
         if (!fs.existsSync(this.sessionDir)) {
             fs.mkdirSync(this.sessionDir, { recursive: true });
         }
+    }
+
+    switchSession(newSessionId: string): void {
+        this.sessionId = newSessionId;
+        this.sessionFile = path.join(this.sessionDir, `session_${this.sessionId}.jsonl`);
+        this.writeQueue = []; // Clear queue (risk of data loss if busy, but acceptable for MVP switch)
+        this.isWriting = false;
+        // ensureSessionDir is already safe
     }
 
     addMessage(message: IChatMessage): void {

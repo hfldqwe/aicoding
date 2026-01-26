@@ -62,6 +62,14 @@ export class TerminalRenderer implements IRenderer {
             uiStore.showConfirmation(prompt, resolve);
         });
     }
+
+    selectSession(items: { label: string; value: string }[]): Promise<string | null> {
+        return new Promise((resolve) => {
+            this.inputResolver = resolve as any; // Re-use resolver mechanism or create new one? 
+            // Actually, internal store handles resolution via callback
+            uiStore.showSelection(items, resolve);
+        });
+    }
 }
 
 import { ConfirmResult } from '../../types/ui.js';

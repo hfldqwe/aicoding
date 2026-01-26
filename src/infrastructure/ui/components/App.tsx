@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Text, useApp, useInput } from 'ink';
 import Spinner from 'ink-spinner';
 import TextInput from 'ink-text-input';
+import SelectInput from 'ink-select-input';
 import { uiStore, UIState } from '../UIStore.js';
 import { ConfirmResult } from '../../../types/ui.js';
 
@@ -21,7 +22,7 @@ const App = ({ onInputSubmit }: { onInputSubmit: (input: string) => void }) => {
         };
     }, []);
 
-    // Handle key presses for confirmation
+    // Handle key presses for confirmation and cancellation
     useInput((input, key) => {
         if (state.pendingConfirmation) {
             if (input === 'y' || input === 'Y') {
@@ -30,6 +31,12 @@ const App = ({ onInputSubmit }: { onInputSubmit: (input: string) => void }) => {
                 uiStore.handleConfirmationResult(ConfirmResult.ALWAYS_ALLOW);
             } else if (input === 'n' || input === 'N') {
                 uiStore.handleConfirmationResult(ConfirmResult.DENY);
+            }
+        }
+
+        if (state.selectionState && state.selectionState.isVisible) {
+            if (key.escape) {
+                uiStore.handleSelectionResult(null);
             }
         }
     });
@@ -42,7 +49,7 @@ const App = ({ onInputSubmit }: { onInputSubmit: (input: string) => void }) => {
     return (
         <Box flexDirection="column">
             {/* Message List */}
-            {state.messages.map((msg) => (
+            {state.messages.map((msg: any) => (
                 <Box key={msg.id} flexDirection="column" marginBottom={1}>
                     <Text color={msg.role === 'user' ? 'green' : 'blue'} bold>
                         {msg.role === 'user' ? 'User' : 'AI'}:
@@ -84,7 +91,7 @@ const App = ({ onInputSubmit }: { onInputSubmit: (input: string) => void }) => {
             )}
 
             {/* User Input */}
-            {!state.pendingConfirmation && state.isInputVisible && (
+            {!state.pendingConfirmation && !state.selectionState && state.isInputVisible && (
                 <Box marginTop={1}>
                     <Text color="green">{state.inputPrompt}</Text>
                     <TextInput
@@ -92,6 +99,20 @@ const App = ({ onInputSubmit }: { onInputSubmit: (input: string) => void }) => {
                         onChange={setInputValue}
                         onSubmit={handleSubmit}
                     />
+                </Box>
+            )}
+
+            {/* Selection Input */}
+            {state.selectionState && state.selectionState.isVisible && (
+                <Box flexDirection="column" marginTop={1} borderStyle="round" borderColor="yellow" padding={1}>
+                    <Text bold color="yellow">Select a Session:</Text>
+                    <SelectInput
+                        items={state.selectionState.items}
+                        onSelect={(item: { label: string; value: string }) => {
+                            uiStore.handleSelectionResult(item.value);
+                        }}
+                    />
+                    <Text color="gray" italic>(Press ESC to cancel)</Text>
                 </Box>
             )}
         </Box>

@@ -14,6 +14,11 @@ export type ToolStatus = {
     output?: string;
 };
 
+export type SelectionItem = {
+    label: string;
+    value: string;
+};
+
 export interface UIState {
     messages: UIMessage[];
     currentTool?: ToolStatus;
@@ -23,6 +28,11 @@ export interface UIState {
     pendingConfirmation?: {
         prompt: string;
         resolve: (result: any) => void;
+    };
+    selectionState?: {
+        isVisible: boolean;
+        items: SelectionItem[];
+        resolve: (value: string | null) => void;
     };
 }
 
@@ -106,6 +116,34 @@ class UIStore extends EventEmitter {
             this.state.pendingConfirmation = undefined;
             this.emit('change', this.state);
             resolve(result);
+        }
+    }
+
+    showSelection(items: SelectionItem[], resolve: (value: string | null) => void) {
+        this.state.isInputVisible = false; // Hide regular input
+        this.state.selectionState = {
+            isVisible: true,
+            items,
+            resolve
+        };
+        this.emit('change', this.state);
+    }
+
+    hideSelection() {
+        if (this.state.selectionState) {
+            this.state.selectionState = undefined;
+            this.state.isInputVisible = true; // Restore regular input
+            this.emit('change', this.state);
+        }
+    }
+
+    handleSelectionResult(value: string | null) {
+        if (this.state.selectionState) {
+            const { resolve } = this.state.selectionState;
+            this.state.selectionState = undefined;
+            this.state.isInputVisible = true; // Restore
+            this.emit('change', this.state);
+            resolve(value);
         }
     }
 }

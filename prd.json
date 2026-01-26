@@ -1,34 +1,32 @@
 {
     "project": "aicoding",
-    "branchName": "ralph/session-ui",
-    "description": "FE-011: Interactive Session Selection UI",
+    "branchName": "ralph/history-popup",
+    "description": "FE-012: In-Session History Selection",
     "userStories": [
         {
-            "id": "US-011.1",
-            "title": "List Sessions Backend",
-            "description": "As a system, I want to scan the session directory and list available sessions sorted by date.",
+            "id": "US-012.1",
+            "title": "UI Selection Component",
+            "description": "As a user, I want a visual menu to select a session.",
             "acceptanceCriteria": [
-                "Implement `JsonlContextManager.listSessions(workspaceRoot)`",
-                "Returns list of sessions with ID, path, lastModified",
-                "Reads first few lines for preview (optional)",
-                "Typecheck passes",
-                "Tests pass"
+                "Install `ink-select-input`",
+                "Update `UIStore` with selection state",
+                "Update `App.tsx` to render selection list",
+                "Implement `TerminalRenderer.selectSession`",
+                "Typecheck passes"
             ],
             "priority": 1,
             "passes": true,
             "notes": ""
         },
         {
-            "id": "US-011.2",
-            "title": "Interactive Selection UI",
-            "description": "As a user, I want to see a list of sessions and pick one to resume.",
+            "id": "US-012.2",
+            "title": "Slash Command & Switching Logic",
+            "description": "As a user, I want to type `/history` to switch sessions.",
             "acceptanceCriteria": [
-                "Add `list` command to CLI",
-                "Add `--pick` flag to `start` command",
-                "Display numbered list of last 10 sessions",
-                "Allow user to select by index",
-                "Start session with selected ID",
-                "Typecheck passes",
+                "Intercept `/history`",
+                "Trigger selection UI",
+                "Implement `JsonlContextManager.switchSession`",
+                "Verify session switch success",
                 "Manual verification"
             ],
             "priority": 2,

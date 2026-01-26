@@ -153,6 +153,43 @@ async function main() {
                         process.exit(0);
                     }
 
+                    if (input.toLowerCase() === '/history') {
+                        const sessions = await JsonlContextManager.listSessions(wsRoot);
+                        if (sessions.length === 0) {
+                            renderer.renderMessage('system', 'No history sessions found.');
+                            continue;
+                        }
+
+                        const items = sessions.slice(0, 10).map(s => {
+                            const date = new Date(s.lastModified).toISOString().replace('T', ' ').substring(0, 19);
+                            // Clean preview for single line display
+                            const cleanPreview = s.preview.replace(/\n/g, ' ').substring(0, 50);
+                            return {
+                                label: `[${date}] ${cleanPreview}...`,
+                                value: s.id
+                            };
+                        });
+
+                        const selectedId = await renderer.selectSession(items);
+                        if (selectedId) {
+                            context.switchSession(selectedId);
+                            renderer.renderMessage('system', `Switched to session: ${selectedId}`);
+
+                            // Re-load history to UI? 
+                            // Ideally we should clear UI and load new history.
+                            // For MVP, just switching context for next prompts. 
+                            // But better UX is to show some history.
+                            const history = await context.getHistory();
+                            // renderMessage appends, so this might duplicate if we don't clear.
+                            // But UIStore keeps all messages. 
+                            // We don't have a 'clearMessages' in Renderer/UIStore yet. 
+                            // Let's just notify switch for now.
+                        } else {
+                            renderer.renderMessage('system', 'Selection cancelled.');
+                        }
+                        continue;
+                    }
+
                     renderer.startSpinner('Thinking...');
                     await agent.run(input);
                     renderer.stopSpinner();
