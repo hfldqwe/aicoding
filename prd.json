@@ -1,0 +1,39 @@
+{
+    "project": "aicoding",
+    "branchName": "ralph/session-ui",
+    "description": "FE-011: Interactive Session Selection UI",
+    "userStories": [
+        {
+            "id": "US-011.1",
+            "title": "List Sessions Backend",
+            "description": "As a system, I want to scan the session directory and list available sessions sorted by date.",
+            "acceptanceCriteria": [
+                "Implement `JsonlContextManager.listSessions(workspaceRoot)`",
+                "Returns list of sessions with ID, path, lastModified",
+                "Reads first few lines for preview (optional)",
+                "Typecheck passes",
+                "Tests pass"
+            ],
+            "priority": 1,
+            "passes": true,
+            "notes": ""
+        },
+        {
+            "id": "US-011.2",
+            "title": "Interactive Selection UI",
+            "description": "As a user, I want to see a list of sessions and pick one to resume.",
+            "acceptanceCriteria": [
+                "Add `list` command to CLI",
+                "Add `--pick` flag to `start` command",
+                "Display numbered list of last 10 sessions",
+                "Allow user to select by index",
+                "Start session with selected ID",
+                "Typecheck passes",
+                "Manual verification"
+            ],
+            "priority": 2,
+            "passes": true,
+            "notes": ""
+        }
+    ]
+}

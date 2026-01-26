@@ -6,7 +6,8 @@ import { ToolRegistry } from './core/tool-registry.js';
 import { ReActAgent } from './core/agent.js';
 import { TerminalRenderer } from './infrastructure/ui/TerminalRenderer.js';
 import { EventBus } from './infrastructure/events/EventBus.js';
-import { InMemoryContextManager } from './infrastructure/context/InMemoryContextManager.js';
+import { JsonlContextManager } from './infrastructure/context/JsonlContextManager.js';
+import { randomUUID } from 'crypto';
 import { FileSystemTool } from './tools/FileSystemTool.js';
 import { LocalWorkspace } from './infrastructure/workspace/LocalWorkspace.js';
 import { TerminalTool } from './tools/TerminalTool.js';
@@ -30,9 +31,34 @@ async function main() {
         .version(pkg.version);
 
     program
+        .command('list')
+        .description('List recent sessions')
+        .action(async () => {
+            const wsRoot = configProvider.get('workspaceRoot');
+            if (!wsRoot) {
+                console.error('Workspace root not configured.');
+                return;
+            }
+            const sessions = await JsonlContextManager.listSessions(wsRoot);
+            if (sessions.length === 0) {
+                console.log('No sessions found.');
+                return;
+            }
+            console.log('Available Sessions:');
+            sessions.forEach((s, i) => {
+                const date = new Date(s.lastModified).toISOString().replace('T', ' ').substring(0, 19);
+                console.log(`${i + 1}. [${date}] ${s.id}`);
+                console.log(`   Preview: ${s.preview}`);
+                console.log('');
+            });
+        });
+
+    program
         .command('start', { isDefault: true })
         .description('Start the AI Agent interactive session')
-        .action(async () => {
+        .option('-s, --session-id <id>', 'Session ID for restoring context')
+        .option('-p, --pick', 'Interactively select a session to resume')
+        .action(async (options) => {
             if (!llmConfig.apiKey) {
                 console.error('Error: AICODING_API_KEY is missing.');
                 process.exit(1);
@@ -40,8 +66,50 @@ async function main() {
 
             // 1. Initialize Infrastructure
             const events = new EventBus();
-            const context = new InMemoryContextManager();
+
+            const wsRoot = configProvider.get('workspaceRoot'); // Redundant get but explicit
+            if (!wsRoot) throw new Error("Workspace root is required");
+
+            // Session Management
+            let sessionId = options.sessionId;
+
+            if (options.pick) {
+                const sessions = await JsonlContextManager.listSessions(wsRoot);
+                if (sessions.length === 0) {
+                    console.log('No sessions found to pick from.');
+                } else {
+                    const readline = require('readline').createInterface({
+                        input: process.stdin,
+                        output: process.stdout
+                    });
+
+                    console.log('Select a session to resume:');
+                    sessions.slice(0, 10).forEach((s, i) => {
+                        const date = new Date(s.lastModified).toISOString().replace('T', ' ').substring(0, 19);
+                        console.log(`${i + 1}) [${date}] ${s.preview.substring(0, 60)}...`);
+                    });
+                    console.log('0) Start New Session');
+
+                    await new Promise<void>(resolve => {
+                        readline.question('Choice: ', (answer: string) => {
+                            const index = parseInt(answer);
+                            if (!isNaN(index) && index > 0 && index <= sessions.length) {
+                                sessionId = sessions[index - 1].id;
+                            }
+                            readline.close();
+                            resolve();
+                        });
+                    });
+                }
+            }
+
+            if (!sessionId) sessionId = randomUUID();
+
+            const context = new JsonlContextManager(sessionId, wsRoot);
+
+            // Notify user of Session ID
             const renderer = new TerminalRenderer();
+            renderer.renderMessage('system', `Session ID: ${sessionId}`);
 
             // 2. Initialize Core
             const llm = new OpenAIProvider({

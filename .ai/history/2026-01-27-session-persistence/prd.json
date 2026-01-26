@@ -1,0 +1,68 @@
+{
+    "project": "aicoding",
+    "branchName": "ralph/session-persistence",
+    "description": "US-010: Agent Context Persistence with JSONL and Session Restoration",
+    "userStories": [
+        {
+            "id": "US-010.1",
+            "title": "JSONL Storage Foundation",
+            "description": "As a system, I want to asynchronously append messages to a JSONL file so that history is preserved without blocking.",
+            "acceptanceCriteria": [
+                "Create `src/infrastructure/context/JsonlContextManager.ts` implementing `IContextManager`",
+                "Implement `addMessage` with an internal queue for async writing",
+                "Use `fs.appendFile` to write lines to `.aicoding/sessions/session_<id>.jsonl`",
+                "Ensure `.aicoding/sessions/` directory exists",
+                "Typecheck passes",
+                "Tests pass (Unit test for Queue)"
+            ],
+            "priority": 1,
+            "passes": true,
+            "notes": "Implemented Queue-based async writing"
+        },
+        {
+            "id": "US-010.2",
+            "title": "Session Hydration",
+            "description": "As a user, I want to load past messages when I start with a Session ID.",
+            "acceptanceCriteria": [
+                "Implement `getHistory` in `JsonlContextManager`",
+                "Read `.jsonl` file line-by-line to reconstruct `IChatMessage[]`",
+                "Handle missing files gracefully",
+                "Typecheck passes",
+                "Tests pass (Unit test for read/write cycle)"
+            ],
+            "priority": 2,
+            "passes": true,
+            "notes": "Implemented getHistory and verified with tests"
+        },
+        {
+            "id": "US-010.3",
+            "title": "Sliding Window & Truncation",
+            "description": "As an agent, I want to limit context usage by discarding old messages (keeping System Prompt) to prevent OOM/Context Overflow.",
+            "acceptanceCriteria": [
+                "Implement sliding window logic (limit by count, e.g., 50)",
+                "Always preserve the FIRST message (System Prompt)",
+                "Truncate oldest messages after System Prompt when limit exceeded",
+                "Typecheck passes",
+                "Tests pass (Unit test for truncation logic)"
+            ],
+            "priority": 3,
+            "passes": true,
+            "notes": "Verified with tests"
+        },
+        {
+            "id": "US-010.4",
+            "title": "CLI Integration",
+            "description": "As a user, I want to specify a session ID via command line arguments to resume my work.",
+            "acceptanceCriteria": [
+                "Update `src/index.ts` to accept `-s, --session-id <id>`",
+                "Replace `InMemoryContextManager` with `JsonlContextManager`",
+                "If no ID provided, generate and print a new UUID",
+                "Typecheck passes",
+                "Manual verification: Run with --session-id and verify restoring"
+            ],
+            "priority": 4,
+            "passes": true,
+            "notes": "Verified CLI flag presence"
+        }
+    ]
+}
