@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "archive": "tsx scripts/archive.ts"
   },
   "repository": {
     "type": "git",
