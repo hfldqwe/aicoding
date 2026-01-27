@@ -15,6 +15,7 @@ export class JsonlContextManager implements IContextManager {
     private sessionFile: string;
     private writeQueue: string[] = [];
     private isWriting = false;
+    private messagesCache: IChatMessage[] | null = null; // Memory cache
 
     constructor(
         private sessionId: string,
@@ -36,6 +37,7 @@ export class JsonlContextManager implements IContextManager {
         this.sessionFile = path.join(this.sessionDir, `session_${this.sessionId}.jsonl`);
         this.writeQueue = []; // Clear queue (risk of data loss if busy, but acceptable for MVP switch)
         this.isWriting = false;
+        this.messagesCache = null; // Reset cache
         // ensureSessionDir is already safe
     }
 
@@ -43,6 +45,11 @@ export class JsonlContextManager implements IContextManager {
         const line = JSON.stringify(message);
         this.writeQueue.push(line);
         this.processQueue();
+
+        // Update cache synchronously if it's already loaded
+        if (this.messagesCache) {
+            this.messagesCache.push(message);
+        }
     }
 
     private async processQueue(): Promise<void> {
@@ -77,7 +84,13 @@ export class JsonlContextManager implements IContextManager {
     }
 
     async getHistory(): Promise<IChatMessage[]> {
+        // Return memory cache if available
+        if (this.messagesCache) {
+            return this.messagesCache;
+        }
+
         if (!fs.existsSync(this.sessionFile)) {
+            this.messagesCache = [];
             return [];
         }
 
@@ -95,6 +108,8 @@ export class JsonlContextManager implements IContextManager {
                     }
                 })
                 .filter((msg): msg is IChatMessage => msg !== null);
+
+            this.messagesCache = allMessages; // Initialize cache
 
             if (allMessages.length === 0) {
                 return [];
@@ -120,6 +135,14 @@ export class JsonlContextManager implements IContextManager {
             // Warning: If recentMessages includes index 0, we duplicate. 
             // But since allMessages.length > MAX (50), and slice(-49) takes last 49, index 0 won't be in there.
 
+            // Note: We cache ALL messages or just the window?
+            // If we return window, but cache ALL, next addMessage appends to All.
+            // But getHistory returns Window.
+            // So `messagesCache` should store ALL messages to enable correct windowing later?
+            // YES.
+            // `allMessages` is the full history.
+            // `getHistory` logic applies windowing on return.
+
             return [systemPrompt, ...recentMessages];
 
         } catch (error) {
@@ -134,7 +157,7 @@ export class JsonlContextManager implements IContextManager {
     }
 
     clear(): void {
-        // TODO: Implement clear
+        this.messagesCache = []; // Clear cache
         if (fs.existsSync(this.sessionFile)) {
             try {
                 fs.unlinkSync(this.sessionFile);

@@ -1,0 +1,35 @@
+{
+    "version": "1.0",
+    "branchName": "fix/empty-prompt-error",
+    "stories": [
+        {
+            "id": "BUG-001",
+            "title": "JsonlContextManager Race Condition Fix",
+            "description": "Ensure JsonlContextManager caches messages in memory to prevent empty history reads immediately after writes.",
+            "acceptanceCriteria": [
+                "Test: addMessage then getHistory returns new message",
+                "Persistence still works",
+                "switchSession clears cache"
+            ],
+            "priority": "High",
+            "passes": false,
+            "tasks": [
+                {
+                    "id": "TASK-001",
+                    "title": "Reproduce Race Condition",
+                    "description": "Create a test case that fails with current implementation"
+                },
+                {
+                    "id": "TASK-002",
+                    "title": "Implement Memory Cache",
+                    "description": "Modify JsonlContextManager to use memory cache"
+                },
+                {
+                    "id": "TASK-003",
+                    "title": "Verify Fix",
+                    "description": "Run tests to ensure race condition is gone"
+                }
+            ]
+        }
+    ]
+}
