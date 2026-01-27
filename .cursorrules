@@ -1,0 +1,9 @@
+
+# Cursor Rules
+
+## Rule Loading Protocol
+You must recursively load and follow all rules defined in the `.agent/rules/` directory. 
+Treat every `.md` file in `.agent/rules/` as a mandatory system instruction.
+
+## Reference
+- **Coding Guide**: `.ai/VIBE_CODING_GUIDE.md`
