@@ -12,6 +12,7 @@ import { FileSystemTool } from './tools/FileSystemTool.js';
 import { LocalWorkspace } from './infrastructure/workspace/LocalWorkspace.js';
 import { TerminalTool } from './tools/TerminalTool.js';
 import { WorkspaceTool } from './tools/WorkspaceTool.js';
+import { MCPClientFactory } from './mcp/MCPClientFactory.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -126,6 +127,49 @@ async function main() {
             tools.register(new TerminalTool(configProvider, renderer));
             tools.register(new WorkspaceTool());
 
+            // MCP Integration
+            const mcpFactory = new MCPClientFactory();
+            const mcpConfigs = configProvider.get('mcpServers') || {};
+            const mcpClients = mcpFactory.createClientsFromConfig(mcpConfigs);
+
+            if (Object.keys(mcpConfigs).length > 0) {
+                renderer.renderMessage('system', `[MCP] Initializing ${mcpClients.length} servers...`);
+            }
+
+            for (const client of mcpClients) {
+                try {
+                    await client.connect();
+                    const mcpTools = await client.getTools();
+                    mcpTools.forEach(t => tools.register(t));
+                } catch (error: any) {
+                    console.error(`[MCP] Failed to connect/register ${client.name}:`, error.message);
+                }
+            }
+
+            // Graceful Shutdown Helper
+            const performCleanup = async () => {
+                if (mcpClients.length > 0) {
+                    renderer.renderMessage('system', '[MCP] Shutting down clients...');
+                    await Promise.all(mcpClients.map(async c => {
+                        try {
+                            await c.dispose();
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }));
+                }
+            };
+
+            // Handle Signals
+            process.on('SIGINT', async () => {
+                await performCleanup();
+                process.exit(0);
+            });
+            process.on('SIGTERM', async () => {
+                await performCleanup();
+                process.exit(0);
+            });
+
             const agent = new ReActAgent(context, tools, llm, events);
 
             // 3. Wire Events
@@ -150,6 +194,7 @@ async function main() {
                 try {
                     const input = await renderer.askUser('You: ');
                     if (input.toLowerCase() === '/exit') {
+                        await performCleanup();
                         process.exit(0);
                     }
 

@@ -11,6 +11,21 @@ export interface IConfig {
         confirmDangerousTools: boolean;
         dangerousCommands: string[];
     };
+    mcpServers: Record<string, McpServerConfig>;
+}
+
+export type McpServerConfig = StdioServerConfig | SseServerConfig;
+
+export interface StdioServerConfig {
+    type: 'stdio';
+    command: string;
+    args: string[];
+    env?: Record<string, string>;
+}
+
+export interface SseServerConfig {
+    type: 'sse';
+    url: string;
 }
 
 export interface IConfigProvider {
