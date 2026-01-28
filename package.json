@@ -26,6 +26,7 @@
   "homepage": "https://github.com/hfldqwe/aicoding#readme",
   "devDependencies": {
     "@types/node": "^25.0.10",
+    "@types/react": "^19.2.10",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
