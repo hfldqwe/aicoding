@@ -16,6 +16,21 @@ export class TerminalRenderer implements IRenderer {
         }));
     }
 
+    async stop(): Promise<void> {
+        if (this.instance) {
+            this.instance.unmount();
+            this.instance = null;
+
+            // Explicitly ensure raw mode is disabled to prevent shell crashes
+            if (process.stdin.setRawMode) {
+                process.stdin.setRawMode(false);
+            }
+
+            // Give a small delay for TTY to flush and restore state
+            await new Promise(resolve => setTimeout(resolve, 50));
+        }
+    }
+
     private handleInput(value: string) {
         if (this.inputResolver) {
             uiStore.hideInput();

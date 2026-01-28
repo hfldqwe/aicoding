@@ -158,6 +158,7 @@ async function main() {
                         }
                     }));
                 }
+                await renderer.stop();
             };
 
             // Handle Signals
