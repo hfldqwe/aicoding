@@ -6,7 +6,7 @@ import fs from 'fs/promises';
 import os from 'os';
 
 const CONFIG_FILE_NAME = 'aicoding.json';
-const CONFIG_DIR_NAME = 'aicoding';
+const CONFIG_DIR_NAME = '.aicoding';
 
 export class ConfigProvider implements IConfigProvider {
     private config: IConfig | null = null;
