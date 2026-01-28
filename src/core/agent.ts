@@ -3,6 +3,7 @@ import { IContextManager, IChatMessage } from '../types/context.js';
 import { IEventBus } from '../types/events.js';
 import { ILLMProvider } from '../types/llm.js';
 import { IToolRegistry } from '../types/tool.js';
+import { ISkillRegistry } from '../types/skill.js';
 import { getSystemPrompt } from './prompts.js';
 
 export class ReActAgent implements IAgent {
@@ -12,7 +13,8 @@ export class ReActAgent implements IAgent {
         readonly context: IContextManager,
         readonly tools: IToolRegistry,
         readonly llm: ILLMProvider,
-        readonly events: IEventBus
+        readonly events: IEventBus,
+        readonly skillRegistry: ISkillRegistry
     ) { }
 
     async run(instruction: string): Promise<void> {
@@ -29,7 +31,12 @@ export class ReActAgent implements IAgent {
             `- ${t.name}: ${t.description}\n  Parameters: ${JSON.stringify(t.parameters)}`
         ).join('\n');
 
-        const systemPrompt = getSystemPrompt(toolsHelp);
+        const skills = this.skillRegistry.getSkills();
+        const skillsHelp = skills.length > 0
+            ? skills.map(s => `- ${s.name}: ${s.description}`).join('\n')
+            : 'No skills available.';
+
+        const systemPrompt = getSystemPrompt(toolsHelp, skillsHelp);
 
         // Check if system prompt is already the first message? 
         // For now, let's just add the instruction. 

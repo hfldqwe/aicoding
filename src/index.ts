@@ -12,6 +12,8 @@ import { FileSystemTool } from './tools/FileSystemTool.js';
 import { LocalWorkspace } from './infrastructure/workspace/LocalWorkspace.js';
 import { TerminalTool } from './tools/TerminalTool.js';
 import { WorkspaceTool } from './tools/WorkspaceTool.js';
+import { FileSystemSkillRegistry } from './infrastructure/skill/FileSystemSkillRegistry.js';
+import { LoadSkillTool } from './tools/skill/LoadSkillTool.js';
 import { MCPClientFactory } from './mcp/MCPClientFactory.js';
 import { createRequire } from 'module';
 
@@ -112,7 +114,13 @@ async function main() {
             const renderer = new TerminalRenderer();
             renderer.renderMessage('system', `Session ID: ${sessionId}`);
 
-            // 2. Initialize Core
+            renderer.renderMessage('system', `Session ID: ${sessionId}`);
+
+            // 2. Initialize Infrastructure (Skills)
+            const skillRegistry = new FileSystemSkillRegistry(wsRoot);
+            await skillRegistry.init();
+
+            // 3. Initialize Core
             const llm = new OpenAIProvider({
                 apiKey: llmConfig.apiKey,
                 modelName: llmConfig.model,
@@ -126,6 +134,7 @@ async function main() {
             tools.register(new FileSystemTool(new LocalWorkspace(wsRoot)));
             tools.register(new TerminalTool(configProvider, renderer));
             tools.register(new WorkspaceTool());
+            tools.register(new LoadSkillTool(skillRegistry));
 
             // MCP Integration
             const mcpFactory = new MCPClientFactory();
@@ -171,7 +180,7 @@ async function main() {
                 process.exit(0);
             });
 
-            const agent = new ReActAgent(context, tools, llm, events);
+            const agent = new ReActAgent(context, tools, llm, events, skillRegistry);
 
             // 3. Wire Events
             events.on('agent:thought', (p) => {

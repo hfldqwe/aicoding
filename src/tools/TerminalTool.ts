@@ -8,7 +8,7 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 export class TerminalTool implements ITool {
-    name = 'terminal_tool';
+    name = 'run_command';
     description = 'Executes shell commands in the current workspace. Use this for git operations, build commands, and other terminal tasks.';
     parameters: IToolSchema = {
         type: 'object',
