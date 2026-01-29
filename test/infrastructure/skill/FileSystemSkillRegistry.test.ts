@@ -1,8 +1,17 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as os from 'os';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { FileSystemSkillRegistry } from '../../../src/infrastructure/skill/FileSystemSkillRegistry.js';
+
+// Mock os module
+vi.mock('os', async (importOriginal) => {
+    const mod = await importOriginal<typeof import('os')>();
+    return {
+        ...mod,
+        homedir: vi.fn()
+    };
+});
 
 describe('FileSystemSkillRegistry', () => {
     let registry: FileSystemSkillRegistry;
@@ -13,10 +22,15 @@ describe('FileSystemSkillRegistry', () => {
         tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aicoding-test-'));
         skillsDir = path.join(tempDir, '.aicoding', 'skills');
         await fs.mkdir(skillsDir, { recursive: true });
+
+        // Mock homedir
+        vi.mocked(os.homedir).mockReturnValue(path.join(tempDir, 'fake-home'));
+
         registry = new FileSystemSkillRegistry(tempDir);
     });
 
     afterEach(async () => {
+        vi.clearAllMocks(); // Clear calls but keep mock implementation (or reset it in beforeEach)
         await fs.rm(tempDir, { recursive: true, force: true });
     });
 

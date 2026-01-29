@@ -1,7 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReActAgent } from '../../src/core/agent.js';
-import { ToolRegistry } from '../../src/core/tool-registry.js';
+import { ToolRegistry } from '../../src/infrastructure/tools/ToolRegistry.js';
 import { IContextManager } from '../../src/types/context.js';
 import { ILLMProvider } from '../../src/types/llm.js';
 import { IEventBus } from '../../src/types/events.js';
@@ -49,7 +49,14 @@ describe('Agent Integration', () => {
             healthCheck: vi.fn().mockResolvedValue(true)
         };
 
-        agent = new ReActAgent(mockContext, registry, mockLLM, mockEvents);
+        // Mock SkillRegistry
+        const mockSkillRegistry: any = {
+            getSkills: vi.fn().mockReturnValue([]),
+            getSkill: vi.fn(),
+            getSkillContent: vi.fn()
+        };
+
+        agent = new ReActAgent(mockContext, registry, mockLLM, mockEvents, mockSkillRegistry);
     });
 
     it('should execute a full ReAct loop with real tools', async () => {

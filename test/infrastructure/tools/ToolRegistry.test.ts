@@ -1,7 +1,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ToolRegistry } from '../../src/core/tool-registry.js';
-import { ITool } from '../../src/types/tool.js';
+import { ToolRegistry } from '../../../src/infrastructure/tools/ToolRegistry.js';
+import { ITool } from '../../../src/types/tool.js';
 
 describe('ToolRegistry', () => {
     let registry: ToolRegistry;

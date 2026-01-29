@@ -1,9 +1,9 @@
 
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText, streamText } from 'ai';
-import { ILLMConfig, ILLMProvider, IStreamChunk } from '../types/llm.js';
-import { IRetryPolicy } from '../types/common.js';
-import { IChatMessage } from '../types/context.js';
+import { ILLMConfig, ILLMProvider, IStreamChunk } from '../../types/llm.js';
+import { IRetryPolicy } from '../../types/common.js';
+import { IChatMessage } from '../../types/context.js';
 
 export class OpenAIProvider implements ILLMProvider {
     private openai;

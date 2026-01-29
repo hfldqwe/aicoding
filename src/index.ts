@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { ConfigProvider } from './infrastructure/config/ConfigProvider.js';
-import { OpenAIProvider } from './core/llm-provider.js';
-import { ToolRegistry } from './core/tool-registry.js';
+import { OpenAIProvider } from './infrastructure/llm/OpenAIProvider.js';
+import { ToolRegistry } from './infrastructure/tools/ToolRegistry.js';
 import { ReActAgent } from './core/agent.js';
 import { TerminalRenderer } from './infrastructure/ui/TerminalRenderer.js';
 import { EventBus } from './infrastructure/events/EventBus.js';

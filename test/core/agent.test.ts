@@ -46,7 +46,13 @@ describe('ReActAgent', () => {
             on: vi.fn()
         };
 
-        agent = new ReActAgent(mockContext, mockTools, mockLLM, mockEvents);
+        const mockSkillRegistry: any = {
+            getSkills: vi.fn().mockReturnValue([]),
+            getSkill: vi.fn(),
+            getSkillContent: vi.fn()
+        };
+
+        agent = new ReActAgent(mockContext, mockTools, mockLLM, mockEvents, mockSkillRegistry);
     });
 
     it('should initialize with system prompt', async () => {

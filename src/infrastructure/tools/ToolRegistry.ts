@@ -1,5 +1,5 @@
 
-import { ITool, IToolRegistry } from '../types/tool.js';
+import { ITool, IToolRegistry } from '../../types/tool.js';
 
 export class ToolRegistry implements IToolRegistry {
     private tools: Map<string, ITool> = new Map();

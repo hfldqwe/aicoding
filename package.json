@@ -10,6 +10,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "test": "vitest run",
+    "type-check": "tsc --noEmit",
+    "build": "tsc",
     "archive": "tsx scripts/archive.ts"
   },
   "repository": {

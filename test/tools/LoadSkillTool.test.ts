@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { LoadSkillTool } from '../../src/tools/skill/LoadSkillTool.js';
-import { ISkillRegistry } from '../../types/skill.js';
+import { ISkillRegistry } from '../../src/types/skill.js';
 
 describe('LoadSkillTool', () => {
     let tool: LoadSkillTool;

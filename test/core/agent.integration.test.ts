@@ -87,15 +87,24 @@ class ScriptedMockLLM implements ILLMProvider {
     async healthCheck(): Promise<boolean> { return true; }
 }
 
+class MockSkillRegistry {
+    async init() { }
+    getSkills() { return []; }
+    getSkill(name: string) { return undefined; }
+    async getSkillContent(name: string) { return undefined; }
+}
+
 describe('ReActAgent Integration', () => {
     let context: IContextManager;
     let tools: IToolRegistry;
     let events: IEventBus;
+    let skills: any; // MockSkillRegistry
 
     beforeEach(() => {
         context = new MockContextManager();
         tools = new MockToolRegistry();
         events = new MockEventBus();
+        skills = new MockSkillRegistry();
     });
 
     it('should run a simple conversation loop', async () => {
@@ -103,7 +112,7 @@ describe('ReActAgent Integration', () => {
             'Final Answer: Hello there!'
         ]);
 
-        const agent = new ReActAgent(context, tools, llm, events);
+        const agent = new ReActAgent(context, tools, llm, events, skills);
 
         let thoughtEmitted = false;
         events.on('agent:thought', (payload: any) => {
@@ -135,7 +144,7 @@ describe('ReActAgent Integration', () => {
             'Thought: I have the secret.\nFinal Answer: The secret is THE_SECRET_CODE'
         ]);
 
-        const agent = new ReActAgent(context, tools, llm, events);
+        const agent = new ReActAgent(context, tools, llm, events, skills);
 
         const toolCalls: string[] = [];
         events.on('tool:call', (payload: any) => {
