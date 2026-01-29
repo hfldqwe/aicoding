@@ -1,26 +1,9 @@
 
-import { ITool, IToolSchema } from '../types/tool.js';
-import { IConfigProvider } from '../types/config.js';
-import { IRenderer, ConfirmResult } from '../types/ui.js';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { ISecurityService, SecurityDecision } from '../../types/security.js';
+import { IConfigProvider } from '../../types/config.js';
+import { IRenderer, ConfirmResult } from '../../types/ui.js';
 
-const execAsync = promisify(exec);
-
-export class TerminalTool implements ITool {
-    name = 'run_command';
-    description = 'Executes shell commands in the current workspace. Use this for git operations, build commands, and other terminal tasks.';
-    parameters: IToolSchema = {
-        type: 'object',
-        properties: {
-            command: {
-                type: 'string',
-                description: 'The shell command to execute.'
-            }
-        },
-        required: ['command']
-    };
-
+export class SecurityService implements ISecurityService {
     private sessionAllowedPatterns: Set<string> = new Set();
 
     constructor(
@@ -28,30 +11,11 @@ export class TerminalTool implements ITool {
         private renderer: IRenderer
     ) { }
 
-    async execute(args: Record<string, any>): Promise<string> {
-        const { command } = args;
-
-        if (!command) {
-            throw new Error('Command is required.');
-        }
-
-        // 1. Security Check
-        await this.checkSecurity(command);
-
-        // 2. Execution
-        try {
-            const { stdout, stderr } = await execAsync(command);
-            return stdout || stderr || 'Command executed successfully (no output).';
-        } catch (error: any) {
-            throw new Error(`Command failed: ${error.message}\n${error.stderr || ''}`);
-        }
-    }
-
-    private async checkSecurity(command: string): Promise<void> {
+    async validateCommand(command: string): Promise<void> {
         const securityConfig = this.config.get('security');
 
         // If dangerous check is disabled, skip
-        if (!securityConfig.confirmDangerousTools) {
+        if (!securityConfig?.confirmDangerousTools) {
             return;
         }
 

@@ -5,13 +5,15 @@ import * as os from 'os';
 import { ReActAgent } from '../../src/core/agent.js';
 import { ToolRegistry } from '../../src/infrastructure/tools/ToolRegistry.js';
 import { FileSystemSkillRegistry } from '../../src/infrastructure/skill/FileSystemSkillRegistry.js';
-import { LoadSkillTool } from '../../src/tools/skill/LoadSkillTool.js';
+import { LoadSkillTool } from '../../src/infrastructure/tools/LoadSkillTool.js';
 import { JsonlContextManager } from '../../src/infrastructure/context/JsonlContextManager.js';
 import { EventBus } from '../../src/infrastructure/events/EventBus.js';
-import { FileSystemTool } from '../../src/tools/FileSystemTool.js';
+import { FileSystemTool } from '../../src/infrastructure/tools/FileSystemTool.js';
 import { LocalWorkspace } from '../../src/infrastructure/workspace/LocalWorkspace.js';
 import { ILLMProvider, IStreamChunk } from '../../src/types/llm.js';
 import { IChatMessage } from '../../src/types/context.js';
+import { IAgent } from '../../src/types/agent.js';
+import { ISkillRegistry } from '../../src/types/skill.js';
 
 // Mock LLM
 class MockLLM implements ILLMProvider {

@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { WorkspaceTool } from '../src/tools/WorkspaceTool.js';
+import { WorkspaceTool } from '../../../src/infrastructure/tools/WorkspaceTool.js';
 import { exec } from 'child_process';
 import path from 'path';
 

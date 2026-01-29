@@ -1,5 +1,5 @@
 
-import { ITool, IToolSchema } from '../types/tool.js';
+import { ITool, IToolSchema } from '../../types/tool.js';
 import { exec } from 'child_process';
 const execAsync = (command: string, options: any = {}): Promise<{ stdout: string, stderr: string }> => {
     return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
 
-import { ITool, IToolSchema } from '../types/tool.js';
-import { IWorkspace } from '../types/workspace.js';
+import { ITool, IToolSchema } from '../../types/tool.js';
+import { IWorkspace } from '../../types/workspace.js';
 
 export class FileSystemTool implements ITool {
     name = 'filesystem_tool';

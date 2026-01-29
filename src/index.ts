@@ -8,13 +8,14 @@ import { TerminalRenderer } from './infrastructure/ui/TerminalRenderer.js';
 import { EventBus } from './infrastructure/events/EventBus.js';
 import { JsonlContextManager } from './infrastructure/context/JsonlContextManager.js';
 import { randomUUID } from 'crypto';
-import { FileSystemTool } from './tools/FileSystemTool.js';
+import { FileSystemTool } from './infrastructure/tools/FileSystemTool.js';
 import { LocalWorkspace } from './infrastructure/workspace/LocalWorkspace.js';
-import { TerminalTool } from './tools/TerminalTool.js';
-import { WorkspaceTool } from './tools/WorkspaceTool.js';
+import { RunCommandTool } from './infrastructure/tools/RunCommandTool.js';
+import { WorkspaceTool } from './infrastructure/tools/WorkspaceTool.js';
 import { FileSystemSkillRegistry } from './infrastructure/skill/FileSystemSkillRegistry.js';
-import { LoadSkillTool } from './tools/skill/LoadSkillTool.js';
+import { LoadSkillTool } from './infrastructure/tools/LoadSkillTool.js';
 import { MCPClientFactory } from './mcp/MCPClientFactory.js';
+import { SecurityService } from './infrastructure/security/SecurityService.js';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
@@ -127,12 +128,14 @@ async function main() {
                 baseURL: llmConfig.baseUrl,
             });
 
+            const securityService = new SecurityService(configProvider, renderer);
+
             const tools = new ToolRegistry();
             if (!wsRoot) {
                 throw new Error("Workspace root not found in config");
             }
             tools.register(new FileSystemTool(new LocalWorkspace(wsRoot)));
-            tools.register(new TerminalTool(configProvider, renderer));
+            tools.register(new RunCommandTool(configProvider, securityService));
             tools.register(new WorkspaceTool());
             tools.register(new LoadSkillTool(skillRegistry));
 

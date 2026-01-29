@@ -1,7 +1,7 @@
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { FileSystemTool } from '../../src/tools/FileSystemTool.js';
-import { IWorkspace } from '../../src/types/workspace.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { FileSystemTool } from '../../../src/infrastructure/tools/FileSystemTool.js';
+import { IWorkspace } from '../../../src/types/workspace.js';
 import * as path from 'path';
 
 describe('FileSystemTool', () => {
