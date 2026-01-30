@@ -122,9 +122,10 @@ export class ResponseParser {
 
     /**
      * XML 格式解析
-     * <tool name="tool_name"><arg key="...">...</arg></tool>
-     * 或
-     * <final_answer>...</final_answer>
+     * 支持多种 XML 格式：
+     * - <tool name="tool_name"><arg key="...">...</arg></tool>
+     * - <functions.tool_name:id>{...}</functions.tool_name:id>
+     * - <final_answer>...</final_answer>
      */
     private static parseXMLFormat(response: string): ParsedResponse | null {
         // 检查 Final Answer
@@ -133,7 +134,7 @@ export class ResponseParser {
             return { type: 'final_answer', content: finalMatch[1].trim() };
         }
 
-        // 检查 Tool 调用
+        // 检查标准 Tool 调用格式：<tool name="...">
         const toolMatch = response.match(/<tool\s+name="([^"]+)"\s*\/?>/);
         if (toolMatch) {
             const toolName = toolMatch[1];
@@ -143,6 +144,29 @@ export class ResponseParser {
             const argMatches = response.matchAll(/<arg\s+key="([^"]+)"\s*\/?>([\s\S]*?)<\/arg>/g);
             for (const match of argMatches) {
                 args[match[1]] = match[2].trim();
+            }
+
+            return {
+                type: 'action',
+                action: { toolName, args }
+            };
+        }
+
+        // 检查 <functions.tool_name:id>{}</functions.tool_name:id> 格式
+        // 例如：<functions.12306-mcp__get-current-date:0>{}</functions.12306-mcp__get-current-date:0>
+        const functionTagMatch = response.match(/<functions\.([^>:]+)(?::\d+)?>([\s\S]*?)<\/functions\.\1(?:\:\d+)?>/);
+        if (functionTagMatch) {
+            const toolName = functionTagMatch[1];
+            const content = functionTagMatch[2].trim();
+
+            let args: Record<string, unknown> = {};
+            if (content) {
+                try {
+                    args = JSON.parse(content);
+                } catch (e) {
+                    // 如果不是有效的 JSON，作为字符串参数
+                    args = { input: content };
+                }
             }
 
             return {
