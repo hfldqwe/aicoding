@@ -63,6 +63,12 @@ export class ReActAgent implements IAgent {
 
             const response = await this.llm.chat(messages);
 
+            // Handle undefined or null response
+            if (!response) {
+                console.error('LLM returned empty response');
+                break;
+            }
+
             this.events.emit('llm:response', { content: response, tokenCount: 0 });
             this.context.addMessage({ role: 'assistant', content: response });
             this.events.emit('agent:thought', { content: response });
@@ -73,8 +79,8 @@ export class ReActAgent implements IAgent {
                 break;
             }
 
-            const actionMatch = response.match(/Action:\s*(.+)/);
-            const inputMatch = response.match(/Action Input:\s*(.+)/s); // Dot matches newline
+            const actionMatch = response.match(/Action:\s*(.+?)(?:\n|$)/);
+            const inputMatch = response.match(/Action Input:\s*(.+?)(?:\n|Observation:|$)/s);
 
             if (actionMatch && inputMatch) {
                 const toolName = actionMatch[1].trim();
