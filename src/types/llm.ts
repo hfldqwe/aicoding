@@ -1,4 +1,5 @@
 import { IChatMessage } from './context.js';
+import { LLMProviderType } from './config.js';
 
 export interface ILLMConfig {
     apiKey: string;
@@ -6,6 +7,10 @@ export interface ILLMConfig {
     temperature?: number;
     maxTokens?: number;
     baseURL?: string;
+    // Provider 类型
+    provider?: LLMProviderType;
+    // 额外的选项
+    options?: Record<string, unknown>;
 }
 
 /**

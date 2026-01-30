@@ -32,10 +32,11 @@ export class ConfigProvider implements IConfigProvider {
         this.config = {
             workspaceRoot: process.cwd(),
             llm: {
-                provider: (process.env.AICODING_PROVIDER as 'openai' | 'anthropic' | 'local') || fileConfig.llm?.provider || 'openai',
+                provider: (process.env.AICODING_PROVIDER as any) || fileConfig.llm?.provider || 'openai',
                 model: process.env.AICODING_MODEL || fileConfig.llm?.model || 'gpt-4o',
                 apiKey: process.env.AICODING_API_KEY || fileConfig.llm?.apiKey,
                 baseUrl: process.env.AICODING_BASE_URL || fileConfig.llm?.baseUrl,
+                options: fileConfig.llm?.options,
             },
             security: {
                 allowShellCommands: process.env.AICODING_ALLOW_SHELL === 'true' || fileConfig.security?.allowShellCommands || false,

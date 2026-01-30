@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { ConfigProvider } from './infrastructure/config/ConfigProvider.js';
-import { OpenAIProvider } from './infrastructure/llm/OpenAIProvider.js';
+import { LLMProviderFactory } from './infrastructure/llm/LLMProviderFactory.js';
 import { ToolRegistry } from './infrastructure/tools/ToolRegistry.js';
 import { ReActAgent } from './core/agent.js';
 import { TerminalRenderer } from './infrastructure/ui/TerminalRenderer.js';
@@ -121,11 +121,13 @@ async function main() {
             const skillRegistry = new FileSystemSkillRegistry(wsRoot);
             await skillRegistry.init();
 
-            // 3. Initialize Core
-            const llm = new OpenAIProvider({
+            // 3. Initialize Core - 使用 LLMProviderFactory 创建对应的 Provider
+            const llm = LLMProviderFactory.create({
                 apiKey: llmConfig.apiKey,
                 modelName: llmConfig.model,
                 baseURL: llmConfig.baseUrl,
+                provider: llmConfig.provider,
+                options: llmConfig.options,
             });
 
             const securityService = new SecurityService(configProvider, renderer);

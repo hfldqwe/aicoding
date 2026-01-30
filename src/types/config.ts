@@ -1,10 +1,21 @@
+// 支持的 LLM Provider 类型
+export type LLMProviderType =
+    | 'openai'
+    | 'anthropic'
+    | 'google'
+    | 'deepseek'
+    | 'alibaba'
+    | 'local';
+
 export interface IConfig {
     workspaceRoot: string;
     llm: {
-        provider: 'openai' | 'anthropic' | 'local';
+        provider: LLMProviderType;
         model: string;
         apiKey?: string;
         baseUrl?: string;
+        // 额外的 provider 特定配置
+        options?: Record<string, unknown>;
     };
     security: {
         allowShellCommands: boolean;
