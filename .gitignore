@@ -7,3 +7,6 @@ coverage/
 .aicoding
 
 .env
+
+# Claude Code local files
+.claude/
