@@ -1,0 +1,46 @@
+/**
+ * 使用多格式解析器的 Agent 示例
+ * 展示如何集成 ResponseParser 到 ReActAgent
+ */
+
+import { ResponseParser, ParsedResponse } from './ResponseParser.js';
+
+// 示例：在 Agent 的 run 方法中使用多格式解析器
+export class ReActAgentWithMultiFormat {
+    async run(instruction: string): Promise<void> {
+        // ... 初始化代码 ...
+
+        while (iterations < this.maxIterations) {
+            iterations++;
+
+            const messages = await this.context.getHistory();
+            const response = await this.llm.chat(messages);
+
+            // 使用多格式解析器解析响应
+            const parsed = ResponseParser.parse(response);
+
+            switch (parsed.type) {
+                case 'final_answer':
+                    // 处理最终答案
+                    this.events.emit('agent:complete', { answer: parsed.content });
+                    return;
+
+                case 'action':
+                    // 执行工具调用
+                    if (parsed.action) {
+                        await this.executeTool(parsed.action.toolName, parsed.action.args);
+                    }
+                    break;
+
+                case 'error':
+                    // 处理解析错误
+                    this.events.emit('agent:error', { error: parsed.error });
+                    return;
+            }
+        }
+    }
+
+    private async executeTool(toolName: string, args: Record<string, unknown>): Promise<void> {
+        // 工具执行逻辑...
+    }
+}
